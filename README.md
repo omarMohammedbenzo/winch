@@ -1,6 +1,6 @@
 # WINCH — Order Assignment System
 
-A real-time order-to-driver assignment system built with Laravel 12 and Vue.js, following a strict Domain-Driven Design (DDD) layout.
+A real-time order-to-driver assignment system built with **Laravel 12** and **Vue.js**, following a strict **Domain-Driven Design (DDD)** layout.
 
 ## Tech Stack & Why
 
@@ -35,3 +35,18 @@ npm run dev
 php artisan serve
 ```
 
+### Stage 1 — Scaffold
+Laravel 12 (12.60.2) on PHP 8.2.12. Git initialized and pushed.
+
+### Stage 2 — DDD structure
+Enforced the mandated `src/` layout with two bounded contexts and one presentation cpanel:
+
+```
+src/
+├── Domain/
+│   ├── Orders/    (Actions, Contracts, Services, DataTransferObjects,
+│   └── Drivers/    Enums, Exceptions, Models/{Entities,Scopes,Abilities,
+│                   Traits}, Providers, Observers, Traits)
+└── Presentation/
+    └── Admin/     (Controllers, Requests, Providers, Resources, Routes, Views)
+```
