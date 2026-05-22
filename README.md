@@ -71,3 +71,12 @@ Migrations for `drivers` and `orders`.
 - Two-step geo search: indexed **bounding-box** pre-filter → `ST_Distance_Sphere()` ranking → nearest first.
 - Only `assignable()` drivers (available + no active order) are considered; busy or already-assigned drivers are excluded even if physically closer.
 
+### Stage 6 — Assignment with concurrency safety
+`AssignOrder` (implements the `OrderAssigner` contract) is the heart of the system.
+
+- **One transaction, pessimistic locks.** It `lockForUpdate()`s the order row first (serialising competing assigns of the same order), then claims the driver under a row lock. `SELECT ... FOR UPDATE` is the answer to the brief's "real concurrency" hint — two simultaneous requests can't double-book a driver or an order.
+- **Cross-domain only via contracts.** The Orders action never touches the `Driver` model. It calls `DriverFinder` (read) and `DriverClaimer` (atomic claim) — all driver mutation stays inside the Drivers domain.
+- **Find→claim race handling.** If a nearby candidate is grabbed by a competing request mid-flight, the claim fails, the finder re-runs (now skipping that busy driver), and the next nearest is tried — bounded to 3 attempts.
+- **Explicit failure modes:** missing order → `ModelNotFoundException` (404); not pending → `OrderAlreadyAssigned` (409); nobody claimable → `NoAvailableDriver` (422).
+- **`OrderAssigned` event** is dispatched on success — a seam for notifications / real-time pushes, with no listener required yet.
+
