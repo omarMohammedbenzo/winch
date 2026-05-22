@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
 
 // Filter options sent as ?filter= to GET /api/orders.
 const FILTERS = [
@@ -30,6 +31,7 @@ async function load(toPage = 1) {
         meta.value = data.meta;
     } catch (e) {
         error.value = 'Failed to load orders.';
+        toast.error('Failed to load orders.');
     } finally {
         loading.value = false;
     }
@@ -42,14 +44,13 @@ async function assign(order) {
         order.status = 'assigned';
         order.status_label = 'assigned';
         order.driver_id = data.data.driver_id;
-        rowState.value[order.id] = {
-            assigning: false,
-            ok: true,
-            message: `Driver #${data.data.driver_id} · ${Math.round(data.data.distance_meters)} m`,
-        };
+        const detail = `Driver #${data.data.driver_id} · ${Math.round(data.data.distance_meters)} m`;
+        rowState.value[order.id] = { assigning: false, ok: true, message: detail };
+        toast.success(`Order #${order.id} assigned — ${detail}`);
     } catch (e) {
         const msg = e.response?.data?.error?.message ?? 'Assignment failed.';
         rowState.value[order.id] = { assigning: false, ok: false, message: msg };
+        toast.error(msg);
     }
 }
 

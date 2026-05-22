@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
 
 const emit = defineEmits(['select']);
 
@@ -15,7 +16,7 @@ const meta = ref(null);
 const loading = ref(false);
 const error = ref(null);
 
-async function load(toPage = 1) {
+async function load(toPage = 1, announce = false) {
     loading.value = true;
     error.value = null;
     try {
@@ -29,8 +30,12 @@ async function load(toPage = 1) {
         });
         drivers.value = data.data;
         meta.value = data.meta;
+        if (announce) {
+            toast.success(`${data.meta.total} driver(s) found.`);
+        }
     } catch (e) {
         error.value = 'Driver search failed.';
+        toast.error('Driver search failed.');
     } finally {
         loading.value = false;
     }
@@ -51,12 +56,12 @@ onMounted(() => load());
                     type="text"
                     placeholder="Search by name or phone…"
                     class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
-                    @keyup.enter="load(1)"
+                    @keyup.enter="load(1, true)"
                 >
                 <button
                     class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-ink hover:bg-brand-dark disabled:opacity-50"
                     :disabled="loading"
-                    @click="load(1)"
+                    @click="load(1, true)"
                 >
                     {{ loading ? '…' : 'Search' }}
                 </button>

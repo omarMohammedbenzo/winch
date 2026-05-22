@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
 
 const props = defineProps({ driver: { type: Object, required: true } });
 const emit = defineEmits(['back']);
@@ -26,6 +27,7 @@ async function load(toPage = 1) {
         meta.value = data.meta;
     } catch (e) {
         error.value = e.response?.data?.error?.message ?? 'Failed to load orders.';
+        toast.error(error.value);
         orders.value = [];
         meta.value = null;
     } finally {
