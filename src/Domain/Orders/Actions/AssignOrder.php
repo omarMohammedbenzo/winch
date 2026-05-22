@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Src\Domain\Orders\Actions;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Src\Domain\Drivers\Contracts\DriverClaimer;
 use Src\Domain\Drivers\Contracts\DriverFinder;
@@ -14,6 +13,7 @@ use Src\Domain\Orders\Enums\OrderStatus;
 use Src\Domain\Orders\Events\OrderAssigned;
 use Src\Domain\Orders\Exceptions\NoAvailableDriver;
 use Src\Domain\Orders\Exceptions\OrderAlreadyAssigned;
+use Src\Domain\Orders\Exceptions\OrderNotFound;
 use Src\Domain\Orders\Models\Entities\Order;
 
 /**
@@ -40,7 +40,7 @@ final class AssignOrder implements OrderAssigner
             $order = Order::query()->whereKey($orderId)->lockForUpdate()->first();
 
             if ($order === null) {
-                throw (new ModelNotFoundException())->setModel(Order::class, [$orderId]);
+                throw new OrderNotFound($orderId);
             }
 
             if (! $order->status->canBeAssigned()) {

@@ -17,7 +17,7 @@ interface OrderAssigner
     /**
      * Assign the order to the nearest available driver.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException order missing
+     * @throws \Src\Domain\Orders\Exceptions\OrderNotFound order missing
      * @throws \Src\Domain\Orders\Exceptions\OrderAlreadyAssigned order not pending
      * @throws \Src\Domain\Orders\Exceptions\NoAvailableDriver no driver claimable
      */
