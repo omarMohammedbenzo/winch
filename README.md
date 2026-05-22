@@ -19,21 +19,35 @@ A real-time order-to-driver assignment system built with **Laravel 12** and **Vu
 
 ## Setup
 
+> Needs **PHP 8.2+**, **Composer 2**, **Node 18+**, and **MySQL 8** (or **MariaDB 10.4.19+** — required for `ST_Distance_Sphere`).
+
 ```bash
 git clone https://github.com/omarMohammedbenzo/winch.git
 cd winch
 
+# 1) PHP dependencies
 composer install
-cp .env.example .env
+
+# 2) Environment file + app key
+cp .env.example .env            # Windows: copy .env.example .env
 php artisan key:generate
 
+# 3) Create the database, then edit DB_* in .env if your MySQL
+#    credentials differ. Defaults: database "winch", user "root", no password.
+mysql -u root -e "CREATE DATABASE winch"
+
+# 4) Schema + demo data (24 drivers, 30 orders)
 php artisan migrate --seed
 
+# 5) Build the Vue frontend
 npm install
-npm run dev
+npm run build                   # or: npm run dev (HMR) in a second terminal
 
-php artisan serve
+# 6) Run
+php artisan serve               # open http://127.0.0.1:8000
 ```
+
+The dashboard is at `/` (tabs: **Orders**, **Driver**, **Scaling**). The API is under `/api`.
 
 ### Stage 1 — Scaffold
 Laravel 12 (12.60.2) on PHP 8.2.12. Git initialized and pushed.
@@ -111,6 +125,13 @@ A Vue 3 (Composition API) SPA served inside Laravel via Vite — a single Blade 
 | `GET`  | `/api/drivers/{driver}/orders` | A driver's orders — status filter + pagination |
 
 All responses are JSON; send `Accept-Language: ar` or `en` for localized labels and error messages. Errors carry a stable `code` plus a localized `message`.
+
+## Challenges & how I handled them
+
+- **DDD models outside `app/Models`** broke Laravel's factory auto-discovery — solved with an explicit `newFactory()` per model.
+- **Mutating a driver from the Orders domain** would violate the domain boundary. Solved by exposing a `DriverClaimer` contract from the Drivers domain, so all driver writes stay inside Drivers.
+- **find → claim race**: the nearest driver could be taken between finding and claiming. Solved by re-checking assignability under a row lock (`lockForUpdate`) and retrying the next candidate.
+- **`ST_Distance_Sphere` isn't in SQLite**, so the geo search drove the DB choice (MySQL/MariaDB) and the portable `DECIMAL` + bounding-box approach.
 
 ## Intentionally not done (and why)
 
