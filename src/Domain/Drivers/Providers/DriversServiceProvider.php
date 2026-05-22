@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Src\Domain\Drivers\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\Domain\Drivers\Contracts\DriverClaimer;
 use Src\Domain\Drivers\Contracts\DriverFinder;
+use Src\Domain\Drivers\Services\EloquentDriverClaimer;
 use Src\Domain\Drivers\Services\NearestAvailableDriverFinder;
 
 /**
@@ -19,6 +21,7 @@ class DriversServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(DriverFinder::class, NearestAvailableDriverFinder::class);
+        $this->app->bind(DriverClaimer::class, EloquentDriverClaimer::class);
     }
 
     public function boot(): void

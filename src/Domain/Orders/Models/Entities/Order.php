@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Src\Domain\Orders\Models\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Src\Domain\Orders\Enums\OrderStatus;
 
