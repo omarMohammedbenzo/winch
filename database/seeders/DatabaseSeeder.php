@@ -11,8 +11,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        Driver::factory()->count(15)->create();           // available
-        Driver::factory()->count(5)->busy()->create();    // on a job
+        Driver::factory()->count(20)->create();           // available
         Driver::factory()->count(4)->offline()->create();  // off shift
 
         Order::factory()->count(30)->create();             // pending, awaiting assignment
