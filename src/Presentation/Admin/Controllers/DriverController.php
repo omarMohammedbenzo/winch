@@ -18,7 +18,7 @@ final class DriverController extends Controller
     public function __invoke(SearchDriversRequest $request, SearchDrivers $action): AnonymousResourceCollection
     {
         return DriverResource::collection(
-            $action->execute($request->searchTerm(), $request->perPage()),
+            $action->execute($request->searchTerm(), $request->statusFilter(), $request->perPage()),
         );
     }
 }
