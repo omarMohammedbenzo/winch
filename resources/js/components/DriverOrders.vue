@@ -3,6 +3,16 @@ import { ref, onMounted } from 'vue';
 
 const STATUSES = ['pending', 'assigned', 'in_progress', 'completed', 'cancelled'];
 
+// Driver availability dot: green = available, yellow = busy, red = offline.
+const DRIVER_DOT = {
+    available: 'bg-green-500',
+    busy: 'bg-yellow-400',
+    offline: 'bg-red-500',
+};
+function dotClass(status) {
+    return DRIVER_DOT[status] ?? 'bg-gray-300';
+}
+
 // --- Driver list + search (by name or phone) ---
 const term = ref('');
 const drivers = ref([]);
@@ -98,11 +108,18 @@ onMounted(() => loadDrivers());
                 :class="selected?.id === d.id ? 'bg-gray-50' : ''"
                 @click="selectDriver(d)"
             >
-                <div>
-                    <p class="text-sm font-medium text-gray-800">{{ d.name }}</p>
-                    <p class="text-xs text-gray-500">{{ d.phone }}</p>
+                <div class="flex items-center gap-3">
+                    <span
+                        class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                        :class="dotClass(d.status)"
+                        :title="d.status_label"
+                    ></span>
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">{{ d.name }}</p>
+                        <p class="text-xs text-gray-500">{{ d.phone }}</p>
+                    </div>
                 </div>
-                <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-600">{{ d.status_label }}</span>
+                <span class="text-xs text-gray-500">{{ d.status_label }}</span>
             </li>
         </ul>
 

@@ -5,7 +5,7 @@ import DriverOrders from './DriverOrders.vue';
 
 const tabs = [
     { key: 'active', label: 'Orders', component: ActiveOrders },
-    { key: 'driver', label: 'Driver Orders', component: DriverOrders },
+    { key: 'driver', label: 'Driver', component: DriverOrders },
 ];
 const current = ref('active');
 </script>
