@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Src\Domain\Orders\Models\Entities;
 
+use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Src\Domain\Orders\Enums\OrderStatus;
 
@@ -21,7 +24,15 @@ use Src\Domain\Orders\Enums\OrderStatus;
  */
 class Order extends Model
 {
+    use HasFactory;
+
     protected $table = 'orders';
+
+    /** Models live outside app/Models, so point the factory resolver explicitly. */
+    protected static function newFactory(): Factory
+    {
+        return OrderFactory::new();
+    }
 
     protected $fillable = [
         'reference',
