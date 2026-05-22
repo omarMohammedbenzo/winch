@@ -137,9 +137,19 @@ All responses are JSON; send `Accept-Language: ar` or `en` for localized labels 
 
 Conscious incompleteness, per the brief:
 
-- **Automated tests** — the assignment logic and its concurrency/failure paths were verified manually (tinker + real HTTP). A `tests/` suite (assignment happy path, 404/409/422, find→claim race) is the next step; it needs a MySQL test DB because the geo search uses `ST_Distance_Sphere` (not available in sqlite).
 - **Real-time updates** — the dispatcher screen refreshes on demand; `OrderAssigned` is already the seam for WebSockets (Laravel Reverb) later.
 - **Driver rejection / re-queue, rate limiting, observability** — out of scope for this exercise; the event-driven design leaves room for them.
+
+## Tests
+
+```bash
+php artisan test
+```
+
+Feature tests cover the assignment logic and its concurrency/failure paths:
+
+- **Assignment** — happy path, no-available-driver, *find→claim race* (a driver that's no longer assignable is rejected under the lock), order-not-pending, missing order.
+- **API** — `/api/orders` filtering + validation, assign-endpoint status mapping (200 / 409 / 422 / 404), Arabic-localized error message, driver search by name/phone + status filter, driver-orders pagination + filter, 404 on unknown driver.
 
 
 ## Part 2 — Scaling decision
