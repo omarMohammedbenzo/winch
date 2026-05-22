@@ -64,3 +64,10 @@ Migrations for `drivers` and `orders`.
 - **Models** (`Order`, `Driver`) live under `Domain/{Context}/Models/Entities`, with cast enums and **explicit local query scopes** — `Driver::assignable()`, `Driver::withinBoundingBox()`, `Order::active()`. Local scopes (not global scopes) so rows are never hidden implicitly.
 
 - **`DriverFinder` contract** is the Drivers domain's only public gateway: primitives in, a `NearestDriver` DTO out. The Orders domain depends on this interface, never on the `Driver` model — enforcing the domain boundary.
+
+### Stage 5 — Nearest-driver finder
+`NearestAvailableDriverFinder` implements `DriverFinder`, bound to the interface in `DriversServiceProvider`.
+
+- Two-step geo search: indexed **bounding-box** pre-filter → `ST_Distance_Sphere()` ranking → nearest first.
+- Only `assignable()` drivers (available + no active order) are considered; busy or already-assigned drivers are excluded even if physically closer.
+

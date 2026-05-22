@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Src\Domain\Drivers\DataTransferObjects;
 
 /**
- * What the Drivers domain exposes about a matched driver — an id and how far
- * away they are.
+ * What the Drivers domain exposes about a matched driver — an id and how far away they are.
  */
 final readonly class NearestDriver
 {
