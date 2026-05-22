@@ -119,3 +119,8 @@ Conscious incompleteness, per the brief:
 - **Automated tests** — the assignment logic and its concurrency/failure paths were verified manually (tinker + real HTTP). A `tests/` suite (assignment happy path, 404/409/422, find→claim race) is the next step; it needs a MySQL test DB because the geo search uses `ST_Distance_Sphere` (not available in sqlite).
 - **Real-time updates** — the dispatcher screen refreshes on demand; `OrderAssigned` is already the seam for WebSockets (Laravel Reverb) later.
 - **Driver rejection / re-queue, rate limiting, observability** — out of scope for this exercise; the event-driven design leaves room for them.
+
+
+## Part 2 — Scaling decision
+
+The written architecture answer (high write + read pressure) lives in **[docs/scaling-decision.md](docs/scaling-decision.md)**.

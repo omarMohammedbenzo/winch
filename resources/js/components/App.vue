@@ -2,10 +2,12 @@
 import { ref } from 'vue';
 import ActiveOrders from './ActiveOrders.vue';
 import DriverOrders from './DriverOrders.vue';
+import ScalingDecision from './ScalingDecision.vue';
 
 const tabs = [
     { key: 'active', label: 'Orders', component: ActiveOrders },
     { key: 'driver', label: 'Driver', component: DriverOrders },
+    { key: 'scaling', label: 'Scaling', component: ScalingDecision },
 ];
 const current = ref('active');
 </script>
