@@ -59,6 +59,23 @@ class Driver extends Model
     }
 
     /**
+     * Free-text search over name or phone. No-op when the term is empty.
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term): void {
+            $q->where('name', 'like', "%{$term}%")
+                ->orWhere('phone', 'like', "%{$term}%");
+        });
+    }
+
+    /**
      * Bounding-box pre-filter around a point (degrees), to cut candidates
      * before the exact ST_Distance_Sphere() ranking. Uses the lat/lng indexes.
      */
