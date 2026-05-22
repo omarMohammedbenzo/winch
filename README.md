@@ -50,3 +50,10 @@ src/
 └── Presentation/
     └── Admin/     (Controllers, Requests, Providers, Resources, Routes, Views)
 ```
+
+### Stage 3 — Database schema
+Migrations for `drivers` and `orders`.
+
+- **Coordinates as `DECIMAL(10,7)`** (source of truth) instead of a spatial `POINT`. Nearest-driver search runs a **bounding-box pre-filter** on indexed `latitude`/`longitude`, then an exact `ST_Distance_Sphere()` on the survivors — fast, portable, and works identically on MySQL 8 and MariaDB 10.4 without a spatial extension. (At larger scale: a `POINT` + `SPATIAL INDEX`, or PostGIS.) check https://postgis.net/docs/manual-1.4/ST_Distance_Sphere.html
+
+- `drivers.current_order_id` — denormalized pointer to the active order, so "driver has no active order" is an O(1).
