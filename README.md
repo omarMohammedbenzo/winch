@@ -57,3 +57,10 @@ Migrations for `drivers` and `orders`.
 - **Coordinates as `DECIMAL(10,7)`** (source of truth) instead of a spatial `POINT`. Nearest-driver search runs a **bounding-box pre-filter** on indexed `latitude`/`longitude`, then an exact `ST_Distance_Sphere()` on the survivors — fast, portable, and works identically on MySQL 8 and MariaDB 10.4 without a spatial extension. (At larger scale: a `POINT` + `SPATIAL INDEX`, or PostGIS.) check https://postgis.net/docs/manual-1.4/ST_Distance_Sphere.html
 
 - `drivers.current_order_id` — denormalized pointer to the active order, so "driver has no active order" is an O(1).
+
+### Stage 4 — Domain core (models, enums, DTOs, contracts)
+- **Enums** carry the rules: `OrderStatus` (`canBeAssigned()`, `occupiesDriver()`, `active()`), `DriverStatus` (`canAcceptOrder()`).
+
+- **Models** (`Order`, `Driver`) live under `Domain/{Context}/Models/Entities`, with cast enums and **explicit local query scopes** — `Driver::assignable()`, `Driver::withinBoundingBox()`, `Order::active()`. Local scopes (not global scopes) so rows are never hidden implicitly.
+
+- **`DriverFinder` contract** is the Drivers domain's only public gateway: primitives in, a `NearestDriver` DTO out. The Orders domain depends on this interface, never on the `Driver` model — enforcing the domain boundary.
