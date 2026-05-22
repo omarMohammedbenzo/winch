@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Src\Domain\Drivers\Models\Entities;
 
+use Database\Factories\DriverFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Src\Domain\Drivers\Enums\DriverStatus;
 
@@ -19,7 +22,15 @@ use Src\Domain\Drivers\Enums\DriverStatus;
  */
 class Driver extends Model
 {
+    use HasFactory;
+
     protected $table = 'drivers';
+
+    /** Models live outside app/Models, so point the factory resolver explicitly. */
+    protected static function newFactory(): Factory
+    {
+        return DriverFactory::new();
+    }
 
     protected $fillable = [
         'name',

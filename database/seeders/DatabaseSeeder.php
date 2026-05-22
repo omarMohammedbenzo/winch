@@ -2,24 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Src\Domain\Drivers\Models\Entities\Driver;
+use Src\Domain\Orders\Models\Entities\Order;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Driver::factory()->count(15)->create();           // available
+        Driver::factory()->count(5)->busy()->create();    // on a job
+        Driver::factory()->count(4)->offline()->create();  // off shift
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        Order::factory()->count(30)->create();             // pending, awaiting assignment
     }
 }

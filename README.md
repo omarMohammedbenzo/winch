@@ -88,3 +88,8 @@ Thin controllers in `Presentation/Admin`, no business logic:
 - **Bilingual responses (ar/en).** `SetLocaleFromHeader` middleware reads `Accept-Language`; resources and exception messages localize off `app()->getLocale()`. Each error returns a stable `code` + a localized `message`.
 - **HTTP status mapping lives in the presentation layer** (`bootstrap/app.php`), not the domain — domain exceptions don't know about HTTP.
 
+### Stage 8 — Factories & seeders
+`php artisan migrate --seed` produces a realistic dispatch snapshot: 24 drivers around central Cairo (15 available, 5 busy, 4 offline) and 30 pending orders.
+
+
+
