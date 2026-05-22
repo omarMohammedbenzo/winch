@@ -11,7 +11,7 @@ const current = ref('active');
 </script>
 
 <template>
-    <div class="min-h-screen">
+    <div class="flex min-h-screen flex-col">
         <!-- Brand bar: ink-black with the WINCH logo -->
         <header class="bg-ink">
             <div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
@@ -36,6 +36,22 @@ const current = ref('active');
             </div>
         </nav>
 
-        <component :is="tabs.find(t => t.key === current).component" />
+        <main class="flex-1">
+            <component :is="tabs.find(t => t.key === current).component" />
+        </main>
+
+        <footer class="bg-ink">
+            <div class="mx-auto flex max-w-3xl items-center justify-center gap-1 px-6 py-4 text-xs text-gray-400">
+                <span>Made by</span>
+                <a
+                    href="https://www.linkedin.com/in/omar-m-227b10253/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-semibold text-brand hover:underline"
+                >
+                    Omar Mohamed
+                </a>
+            </div>
+        </footer>
     </div>
 </template>
