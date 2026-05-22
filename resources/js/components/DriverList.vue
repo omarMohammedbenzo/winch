@@ -41,7 +41,7 @@ onMounted(() => load());
 
 <template>
     <div class="mx-auto max-w-3xl p-6">
-        <h1 class="mb-4 text-xl font-semibold text-gray-800">Drivers</h1>
+        <h1 class="mb-4 border-l-4 border-brand pl-3 text-xl font-bold uppercase tracking-wide text-ink">Drivers</h1>
 
         <!-- Search + filters, all on one row -->
         <div class="mb-4 flex flex-wrap items-end gap-3">
@@ -54,7 +54,7 @@ onMounted(() => load());
                     @keyup.enter="load(1)"
                 >
                 <button
-                    class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+                    class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-ink hover:bg-brand-dark disabled:opacity-50"
                     :disabled="loading"
                     @click="load(1)"
                 >

@@ -59,7 +59,7 @@ onMounted(() => load());
 <template>
     <div class="mx-auto max-w-3xl p-6">
         <header class="mb-5 flex items-center justify-between gap-3">
-            <h1 class="text-xl font-semibold text-gray-800">Orders</h1>
+            <h1 class="border-l-4 border-brand pl-3 text-xl font-bold uppercase tracking-wide text-ink">Orders</h1>
             <div class="flex items-end gap-3">
                 <label class="flex flex-col text-xs text-gray-600">
                     Filter
@@ -102,7 +102,7 @@ onMounted(() => load());
                     </span>
                     <button
                         v-if="order.status === 'pending'"
-                        class="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+                        class="rounded-md bg-brand px-3 py-1.5 text-sm font-semibold text-ink hover:bg-brand-dark disabled:opacity-50"
                         :disabled="rowState[order.id]?.assigning"
                         @click="assign(order)"
                     >
