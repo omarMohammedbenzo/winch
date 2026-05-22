@@ -91,5 +91,31 @@ Thin controllers in `Presentation/Admin`, no business logic:
 ### Stage 8 — Factories & seeders
 `php artisan migrate --seed` produces a realistic dispatch snapshot: 24 drivers around central Cairo (15 available, 5 busy, 4 offline) and 30 pending orders.
 
+### Stage 9 — Vue frontend
+A Vue 3 (Composition API) SPA served inside Laravel via Vite — a single Blade page mounts `ActiveOrders.vue`.
+
+- The component lists orders with a **filter** (`active` default · `all` · or any single status) + pagination, and gives each pending one an **Assign** button. On assign it shows per-row loading, then either the matched driver + distance, or the localized API error (e.g. "no available driver").
+- The assigned row updates in place (no full reload). Axios sends `Accept: application/json`; `Accept-Language` would drive ar/en.
+
+- **Driver list** on open (`GET /api/drivers`): search by name or phone (`Driver::search()` scope), a **driver-status filter** (available / busy / offline), per-page selector, pagination, and a colored availability dot (🟢 available · 🟡 busy · 🔴 offline).
+- **Clicking a driver opens a separate detail screen** showing `GET /api/drivers/{id}/orders` with an **order-status filter** (pending / assigned / …) and pagination — the second required endpoint, with a UI.
 
 
+## API summary
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `POST` | `/api/orders/{order}/assign` | Assign an order to the nearest available driver |
+| `GET`  | `/api/orders` | Orders for the dispatcher screen — `?filter=active\|all\|<status>` + pagination |
+| `GET`  | `/api/drivers` | Search drivers by name/phone (paginated) |
+| `GET`  | `/api/drivers/{driver}/orders` | A driver's orders — status filter + pagination |
+
+All responses are JSON; send `Accept-Language: ar` or `en` for localized labels and error messages. Errors carry a stable `code` plus a localized `message`.
+
+## Intentionally not done (and why)
+
+Conscious incompleteness, per the brief:
+
+- **Automated tests** — the assignment logic and its concurrency/failure paths were verified manually (tinker + real HTTP). A `tests/` suite (assignment happy path, 404/409/422, find→claim race) is the next step; it needs a MySQL test DB because the geo search uses `ST_Distance_Sphere` (not available in sqlite).
+- **Real-time updates** — the dispatcher screen refreshes on demand; `OrderAssigned` is already the seam for WebSockets (Laravel Reverb) later.
+- **Driver rejection / re-queue, rate limiting, observability** — out of scope for this exercise; the event-driven design leaves room for them.
