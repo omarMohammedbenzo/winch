@@ -32,18 +32,14 @@ composer install
 cp .env.example .env            # Windows: copy .env.example .env
 php artisan key:generate
 
-# 3) Create the database, then edit DB_* in .env if your MySQL
-#    credentials differ. Defaults: database "winch", user "root", no password.
-mysql -u root -e "CREATE DATABASE winch"
-
-# 4) Schema + demo data (24 drivers, 30 orders)
+# 3) Schema + demo data (24 drivers, 30 orders)
 php artisan migrate --seed
 
-# 5) Build the Vue frontend
+# 4) Build the Vue frontend
 npm install
 npm run build                   # or: npm run dev (HMR) in a second terminal
 
-# 6) Run
+# 5) Run
 php artisan serve               # open http://127.0.0.1:8000
 ```
 
